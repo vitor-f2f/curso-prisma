@@ -1,0 +1,40 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model cities {
+  id                                  Int       @id @default(autoincrement())
+  name                                String?
+  flights_flights_destinationTocities flights[] @relation("flights_destinationTocities")
+  flights_flights_originTocities      flights[] @relation("flights_originTocities")
+}
+
+model flights {
+  id                                 Int       @id @default(autoincrement())
+  origin                             Int?
+  destination                        Int?
+  date                               DateTime? @db.Date
+  cities_flights_destinationTocities cities?   @relation("flights_destinationTocities", fields: [destination], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  cities_flights_originTocities      cities?   @relation("flights_originTocities", fields: [origin], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  travels                            travels[]
+}
+
+model passengers {
+  id        Int       @id @default(autoincrement())
+  firstname String?
+  lastname  String?
+  travels   travels[]
+}
+
+model travels {
+  id          Int         @id @default(autoincrement())
+  passengerid Int?
+  flightid    Int?
+  flights     flights?    @relation(fields: [flightid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  passengers  passengers? @relation(fields: [passengerid], references: [id], onDelete: NoAction, onUpdate: NoAction)
+}
